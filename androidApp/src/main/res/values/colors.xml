@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Override ZXing Scanner Colors to match Girly Theme -->
+    <color name="zxing_viewfinder_laser">#FFFF007F</color> <!-- Vibrant Pink -->
+    <color name="zxing_possible_result_points">#C0FF007F</color> <!-- Semi-transparent Pink -->
+</resources>

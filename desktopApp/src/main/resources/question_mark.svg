@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -80 200 240" width="120" height="120">
+    <!-- Hook of the question mark -->
+    <path d="M 60 30 C -15 -60, 135 -60, 75 75" fill="none" stroke="#FF007F" stroke-width="18" stroke-linecap="round"/>
+    
+    <!-- Dot of the question mark -->
+    <circle cx="60" cy="127.5" r="12" fill="#FF007F"/>
+</svg>

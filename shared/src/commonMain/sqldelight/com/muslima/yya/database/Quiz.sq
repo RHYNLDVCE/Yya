@@ -1,0 +1,86 @@
+CREATE TABLE QuizEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL
+);
+
+CREATE TABLE QuestionEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    quizId TEXT NOT NULL,
+    text TEXT NOT NULL,
+    correctAnswer TEXT NOT NULL,
+    options TEXT NOT NULL,
+    points INTEGER NOT NULL DEFAULT 10
+);
+
+CREATE TABLE StudentEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    studentNumber TEXT NOT NULL,
+    age INTEGER NOT NULL,
+    gender TEXT NOT NULL,
+    yearLevel TEXT NOT NULL
+);
+
+CREATE TABLE LeaderboardEntryEntity (
+    studentId TEXT NOT NULL,
+    quizId TEXT NOT NULL,
+    studentName TEXT NOT NULL,
+    score INTEGER NOT NULL DEFAULT 0,
+    timeTakenMs INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (studentId, quizId)
+);
+
+-- Queries for Quiz
+insertQuiz:
+INSERT OR REPLACE INTO QuizEntity(id, title) VALUES (?, ?);
+
+getQuizzes:
+SELECT * FROM QuizEntity;
+
+updateQuiz:
+UPDATE QuizEntity SET title = ? WHERE id = ?;
+
+deleteQuiz:
+DELETE FROM QuizEntity WHERE id = ?;
+
+-- Queries for Question
+insertQuestion:
+INSERT OR REPLACE INTO QuestionEntity(id, quizId, text, correctAnswer, options, points) VALUES (?, ?, ?, ?, ?, ?);
+
+getQuestionsForQuiz:
+SELECT * FROM QuestionEntity WHERE quizId = ?;
+
+updateQuestion:
+UPDATE QuestionEntity SET text = ?, correctAnswer = ?, options = ?, points = ? WHERE id = ?;
+
+deleteQuestionsForQuiz:
+DELETE FROM QuestionEntity WHERE quizId = ?;
+
+deleteQuestion:
+DELETE FROM QuestionEntity WHERE id = ?;
+
+-- Queries for Student
+insertStudent:
+INSERT OR REPLACE INTO StudentEntity(id, firstName, lastName, studentNumber, age, gender, yearLevel) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+insertStudentIgnore:
+INSERT OR IGNORE INTO StudentEntity(id, firstName, lastName, studentNumber, age, gender, yearLevel) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+getStudents:
+SELECT * FROM StudentEntity;
+
+updateStudent:
+UPDATE StudentEntity SET firstName = ?, lastName = ?, studentNumber = ?, age = ?, gender = ?, yearLevel = ? WHERE id = ?;
+
+deleteStudent:
+DELETE FROM StudentEntity WHERE id = ?;
+
+insertLeaderboardEntry:
+INSERT OR REPLACE INTO LeaderboardEntryEntity(studentId, quizId, studentName, score, timeTakenMs) VALUES (?, ?, ?, ?, ?);
+
+updateLeaderboardScore:
+UPDATE LeaderboardEntryEntity SET score = score + ?, timeTakenMs = timeTakenMs + ? WHERE studentId = ? AND quizId = ?;
+
+getLeaderboardEntries:
+SELECT * FROM LeaderboardEntryEntity WHERE quizId = ? ORDER BY score DESC, timeTakenMs ASC;
