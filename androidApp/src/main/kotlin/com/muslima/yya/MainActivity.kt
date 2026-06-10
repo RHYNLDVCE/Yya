@@ -3,6 +3,7 @@ package com.muslima.yya
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import com.muslima.yya.di.platformModule
 import com.muslima.yya.di.sharedModule
 import com.muslima.yya.presentation.StudentScreen
@@ -14,6 +15,7 @@ import org.koin.java.KoinJavaComponent.getKoin
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         
         try {
             startKoin {

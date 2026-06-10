@@ -88,7 +88,7 @@ fun StudentScreen(viewModel: StudentViewModel) {
                 drawQuestionMark(Offset(canvasWidth * 0.15f, canvasHeight * 0.85f), 1.0f, VibrantRed.copy(alpha = 0.1f))
             }
 
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
                 if (state.isConnected) {
                     // Glassy Header for connected state
                     Card(

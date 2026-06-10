@@ -29,7 +29,7 @@ fun QrScannerButton(modifier: Modifier = Modifier, onQrScanned: (String) -> Unit
         onClick = {
             val options = ScanOptions()
             options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-            options.setPrompt("Scan the Quiz QR Code 🌸")
+            options.setPrompt("Scan the Quiz QR Code")
             options.setBeepEnabled(false)
 
             // Force portrait mode using the custom CaptureActivity
