@@ -32,7 +32,7 @@ val DarkTextFieldColors @Composable get() = OutlinedTextFieldDefaults.colors(
 
 @Composable
 fun StudentsSection(viewModel: AdminViewModel, state: AdminState, subOption: String?) {
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
     when (subOption) {
         "Add Students" -> AddStudentSection(viewModel)
         "List All Students" -> ListStudentsSection(state)
@@ -68,7 +68,7 @@ fun AddStudentSection(viewModel: AdminViewModel) {
     var gender by remember { mutableStateOf("") }
     var yearLevel by remember { mutableStateOf("") }
 
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
 
     Card(
         modifier = Modifier
@@ -85,17 +85,17 @@ fun AddStudentSection(viewModel: AdminViewModel) {
         Column(modifier = Modifier.padding(40.dp).fillMaxWidth()) {
             Text("Add New Student", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
-            OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = studentNumber, onValueChange = { studentNumber = it }, label = { Text("Student Number") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = studentNumber, onValueChange = { studentNumber = it }, label = { Text("Student Number") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = gender, onValueChange = { gender = it }, label = { Text("Gender") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = gender, onValueChange = { gender = it }, label = { Text("Gender") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = yearLevel, onValueChange = { yearLevel = it }, label = { Text("Year Level") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+            OutlinedTextField(value = yearLevel, onValueChange = { yearLevel = it }, label = { Text("Year Level") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = {
@@ -112,7 +112,7 @@ fun AddStudentSection(viewModel: AdminViewModel) {
                 },
                 modifier = Modifier.align(Alignment.End).height(56.dp).width(160.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Save Student", fontWeight = FontWeight.Bold, color = Color.White)
             }
@@ -122,7 +122,7 @@ fun AddStudentSection(viewModel: AdminViewModel) {
 
 @Composable
 fun ListStudentsSection(state: AdminState) {
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -143,7 +143,7 @@ fun ListStudentsSection(state: AdminState) {
                     Card(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f)),
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f)),
                         elevation = CardDefaults.cardElevation(0.dp)
                     ) {
@@ -162,7 +162,7 @@ fun ListStudentsSection(state: AdminState) {
 @Composable
 fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
     var selectedStudent by remember { mutableStateOf<Student?>(null) }
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
 
     Card(
         modifier = Modifier
@@ -185,7 +185,7 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
                         Card(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { selectedStudent = student },
                             colors = CardDefaults.cardColors(containerColor = if (selectedStudent?.id == student.id) Color.White.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.05f)),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(8.dp),
                             elevation = CardDefaults.cardElevation(0.dp)
                         ) {
                             Text("${student.firstName} ${student.lastName}", modifier = Modifier.padding(16.dp), color = TextPrimary, fontWeight = if (selectedStudent?.id == student.id) FontWeight.Bold else FontWeight.Normal)
@@ -205,17 +205,17 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
                 Column(modifier = Modifier.weight(2f).fillMaxHeight().padding(16.dp)) {
                     Text("Update Details", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
                     Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = studentNumber, onValueChange = { studentNumber = it }, label = { Text("Student Number") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = studentNumber, onValueChange = { studentNumber = it }, label = { Text("Student Number") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = gender, onValueChange = { gender = it }, label = { Text("Gender") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = gender, onValueChange = { gender = it }, label = { Text("Gender") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = yearLevel, onValueChange = { yearLevel = it }, label = { Text("Year Level") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(16.dp))
+                    OutlinedTextField(value = yearLevel, onValueChange = { yearLevel = it }, label = { Text("Year Level") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = {
@@ -231,7 +231,7 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
                         },
                         modifier = Modifier.align(Alignment.End).height(48.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
-                        shape = RoundedCornerShape(24.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Text("Update Student", fontWeight = FontWeight.Bold, color = Color.White)
                     }
@@ -247,7 +247,7 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
 
 @Composable
 fun DeleteStudentSection(viewModel: AdminViewModel, state: AdminState) {
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -268,7 +268,7 @@ fun DeleteStudentSection(viewModel: AdminViewModel, state: AdminState) {
                     Card(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.1f)),
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f)),
                         elevation = CardDefaults.cardElevation(0.dp)
                     ) {
@@ -280,7 +280,7 @@ fun DeleteStudentSection(viewModel: AdminViewModel, state: AdminState) {
                             Button(
                                 onClick = { viewModel.deleteStudent(student.id) },
                                 colors = ButtonDefaults.buttonColors(containerColor = SoftCoral),
-                                shape = RoundedCornerShape(24.dp)
+                                shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text("Delete", color = Color.White, fontWeight = FontWeight.Bold)
                             }

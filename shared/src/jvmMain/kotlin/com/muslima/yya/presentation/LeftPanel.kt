@@ -25,7 +25,7 @@ fun LeftPanel(
 ) {
     var studentsExpanded by remember { mutableStateOf(false) }
     var quizExpanded by remember { mutableStateOf(false) }
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
 
     Card(
         modifier = Modifier
@@ -126,7 +126,7 @@ fun MenuButton(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
@@ -159,7 +159,7 @@ fun SubMenuButton(title: String, isSelected: Boolean, onClick: () -> Unit) {
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(8.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.Start) {
             Text(title, fontSize = 14.sp, fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal)

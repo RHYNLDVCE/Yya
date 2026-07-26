@@ -26,16 +26,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 
-// Girly, Cursive Typography to match the aesthetic
-val GirlyTypography = Typography(
-    headlineLarge = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold, fontSize = 46.sp, letterSpacing = 1.sp),
-    headlineMedium = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.SemiBold, fontSize = 36.sp, letterSpacing = 0.5.sp),
-    headlineSmall = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, letterSpacing = 0.sp),
-    titleLarge = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold, fontSize = 24.sp),
-    titleMedium = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.SemiBold, fontSize = 22.sp, letterSpacing = 0.15.sp),
-    bodyLarge = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 0.5.sp, lineHeight = 28.sp),
-    bodyMedium = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Normal, fontSize = 18.sp, letterSpacing = 0.25.sp),
-    labelLarge = TextStyle(fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Medium, fontSize = 18.sp, letterSpacing = 0.1.sp)
+// Clean, Readable Typography
+val FormalTypography = Typography(
+    headlineLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 36.sp, letterSpacing = 0.sp),
+    headlineMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, letterSpacing = 0.sp),
+    headlineSmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 24.sp, letterSpacing = 0.sp),
+    titleLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 20.sp),
+    titleMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, letterSpacing = 0.15.sp),
+    bodyLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 16.sp, letterSpacing = 0.5.sp, lineHeight = 24.sp),
+    bodyMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 14.sp, letterSpacing = 0.25.sp),
+    labelLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Medium, fontSize = 14.sp, letterSpacing = 0.1.sp)
 )
 
 @Composable
@@ -50,7 +50,7 @@ fun StudentScreen(viewModel: StudentViewModel) {
             primary = VibrantPink,
             onPrimary = Color.White
         ),
-        typography = GirlyTypography
+        typography = FormalTypography
     ) {
         Box(
             modifier = Modifier
@@ -107,7 +107,7 @@ fun StudentScreen(viewModel: StudentViewModel) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                                 IconButton(
                                     onClick = { viewModel.disconnect() },
                                     modifier = Modifier
@@ -122,16 +122,16 @@ fun StudentScreen(viewModel: StudentViewModel) {
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text(state.quizTitle, fontWeight = FontWeight.Bold, color = TextPrimary)
+                                Text(state.quizTitle, fontWeight = FontWeight.Bold, color = TextPrimary, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                             }
-                            Text(state.studentName, color = TextSecondary)
+                            Text(state.studentName, color = TextSecondary, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         }
                     }
                 }
 
                 Box(modifier = Modifier.weight(1f)) {
                     if (!state.isConnected) {
-                        JoinQuizSection(viewModel)
+                        JoinQuizSection(viewModel, state)
                     } else if (state.quizEnded) {
                         QuizEndedSection(state)
                     } else if (state.currentQuestion == null) {
@@ -173,7 +173,7 @@ fun QuestionMarkIcon(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun JoinQuizSection(viewModel: StudentViewModel) {
+fun JoinQuizSection(viewModel: StudentViewModel, state: StudentState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -205,6 +205,16 @@ fun JoinQuizSection(viewModel: StudentViewModel) {
             textAlign = TextAlign.Center
         )
 
+        if (state.joinError != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = state.joinError,
+                style = MaterialTheme.typography.bodyMedium,
+                color = VibrantRed,
+                textAlign = TextAlign.Center
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         QrScannerButton(modifier = Modifier.padding(bottom = 16.dp)) { scannedData ->
@@ -218,15 +228,34 @@ fun QuestionSection(viewModel: StudentViewModel, state: StudentState) {
     val question = state.currentQuestion ?: return
     var selectedOption by remember(question.id) { mutableStateOf<String?>(null) }
 
+    var timeLeft by remember(question.id) { mutableStateOf(state.timeLimitMs) }
+
+    LaunchedEffect(question.id) {
+        while (timeLeft > 0) {
+            kotlinx.coroutines.delay(100)
+            val elapsed = kotlinx.datetime.Clock.System.now().toEpochMilliseconds() - state.questionStartTime
+            timeLeft = maxOf(0L, state.timeLimitMs - elapsed)
+        }
+    }
+
+    val secondsLeft = (timeLeft / 1000).toInt()
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Question:", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Question:", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("Time: ${secondsLeft}s", style = MaterialTheme.typography.titleMedium, color = if (secondsLeft <= 5) VibrantRed else MatchaGreen)
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Text(question.text, style = MaterialTheme.typography.titleMedium, color = TextPrimary)
         Spacer(modifier = Modifier.height(32.dp))
 
         if (state.answered) {
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp), contentAlignment = Alignment.Center) {
-                Text("Answer submitted. Waiting for the next question...", style = MaterialTheme.typography.titleMedium, color = TextSecondary)
+                Text("Answer submitted. Waiting for the next question...", style = MaterialTheme.typography.titleMedium, color = TextSecondary, textAlign = TextAlign.Center)
+            }
+        } else if (timeLeft <= 0) {
+            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp), contentAlignment = Alignment.Center) {
+                Text("Time's up! Waiting for the next question...", style = MaterialTheme.typography.titleMedium, color = VibrantRed, textAlign = TextAlign.Center)
             }
         } else {
             question.options.forEach { option ->
@@ -270,26 +299,24 @@ fun QuestionSection(viewModel: StudentViewModel, state: StudentState) {
 
 @Composable
 fun QuizEndedSection(state: StudentState) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Quiz Ended!", style = MaterialTheme.typography.headlineLarge, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+    val myScore = state.leaderboard.find { it.studentId == state.studentId }?.score ?: 0
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        QuestionMarkIcon()
         Spacer(modifier = Modifier.height(32.dp))
-        Text("Leaderboard", style = MaterialTheme.typography.titleLarge, color = TextPrimary, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(state.leaderboard) { student ->
-                Card(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                    colors = CardDefaults.cardColors(containerColor = GlassContainer),
-                    border = BorderStroke(1.dp, GlassBorder),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(0.dp)
-                ) {
-                    Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text(student.studentName, color = TextPrimary, fontWeight = FontWeight.SemiBold)
-                        Text("${student.score} pts", color = MatchaGreen, fontWeight = FontWeight.ExtraBold, fontSize = 22.sp)
-                    }
-                }
+        Text("The quiz is already done!", style = MaterialTheme.typography.headlineLarge, color = VibrantPink, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(32.dp),
+            colors = CardDefaults.cardColors(containerColor = GlassContainer),
+            border = BorderStroke(2.dp, VibrantPink),
+            shape = RoundedCornerShape(32.dp),
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            Column(modifier = Modifier.padding(32.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Your Score", style = MaterialTheme.typography.titleLarge, color = TextPrimary)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("$myScore pts", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 64.sp), color = MatchaGreen, fontWeight = FontWeight.ExtraBold)
             }
         }
     }

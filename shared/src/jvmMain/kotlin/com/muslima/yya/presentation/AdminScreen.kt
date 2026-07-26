@@ -28,10 +28,10 @@ val DarkMatcha = Color(0xFFA3B18A)
 val VibrantPink = Color(0xFFFF007F)
 val VibrantRed = Color(0xFFFF4D4D)
 val VibrantPurple = Color(0xFF9D00FF)
-val GlassContainer = Color.White.copy(alpha = 0.1f)
-val GlassBorder = Color.White.copy(alpha = 0.15f)
+val GlassContainer = Color(0xFF1E1E2E).copy(alpha = 0.4f)
+val GlassBorder = Color.White.copy(alpha = 0.2f)
 val TextPrimary = Color(0xFFFFFFFF)
-val TextSecondary = Color.White.copy(alpha = 0.7f)
+val TextSecondary = Color(0xFFA0A0B0)
 val SoftCoral = Color(0xFFFFA69E)
 
 // Global state and style for heavy blur glassmorphism
@@ -158,16 +158,19 @@ fun AdminScreen(viewModel: AdminViewModel) {
                             }
                         )
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(32.dp))
 
-                        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                            // ... rest of your existing logic ...
+                        Box(modifier = Modifier.weight(1f).fillMaxHeight().padding(vertical = 16.dp, horizontal = 24.dp)) {
                             when (selectedMenu) {
                                 "Dashboard" -> DashboardSection(viewModel, state)
                                 "Students" -> StudentsSection(viewModel, state, selectedSubMenu)
                                 "Quiz" -> {
                                     if (state.selectedQuizDetail != null) {
-                                        QuizDetailSection(viewModel, state)
+                                        if (state.isQuizStarted) {
+                                            ActiveQuizSection(viewModel, state)
+                                        } else {
+                                            QuizDetailSection(viewModel, state)
+                                        }
                                     } else {
                                         when (selectedSubMenu) {
                                             "Add Quiz" -> AddQuizSection(viewModel)

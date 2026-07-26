@@ -14,6 +14,9 @@ sealed class WsMessage {
     data class StudentJoined(val student: Student, val quizId: String) : WsMessage()
     
     @Serializable
+    data class JoinRejected(val studentId: String, val reason: String) : WsMessage()
+    
+    @Serializable
     data class NextQuestion(val question: Question, val timeLimitMs: Long) : WsMessage()
     
     @Serializable

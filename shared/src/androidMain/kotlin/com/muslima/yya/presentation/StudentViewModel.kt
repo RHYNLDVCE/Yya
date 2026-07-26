@@ -26,7 +26,8 @@ data class StudentState(
     val questionStartTime: Long = 0,
     val answered: Boolean = false,
     val isCorrect: Boolean? = null,
-    val quizEnded: Boolean = false
+    val quizEnded: Boolean = false,
+    val joinError: String? = null
 )
 
 class StudentViewModel(
@@ -61,6 +62,11 @@ class StudentViewModel(
                     }
                     is WsMessage.QuizEnded -> {
                         _state.update { it.copy(quizEnded = true, leaderboard = event.leaderboard, currentQuestion = null) }
+                    }
+                    is WsMessage.JoinRejected -> {
+                        if (event.studentId == _state.value.studentId) {
+                            disconnect(error = event.reason)
+                        }
                     }
                     else -> {}
                 }
@@ -123,10 +129,10 @@ class StudentViewModel(
         }
     }
     
-    fun disconnect() {
+    fun disconnect(error: String? = null) {
         viewModelScope.launch {
             client.disconnect()
-            _state.update { StudentState() }
+            _state.update { StudentState(joinError = error) }
         }
     }
     

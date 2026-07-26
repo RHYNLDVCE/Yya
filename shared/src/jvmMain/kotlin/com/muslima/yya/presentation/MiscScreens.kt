@@ -30,7 +30,7 @@ fun LoginSection(viewModel: AdminViewModel) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val passwordFocusRequester = remember { FocusRequester() }
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = VibrantPink,
@@ -126,7 +126,7 @@ fun LoginSection(viewModel: AdminViewModel) {
                                 } else false
                             },
                             colors = textFieldColors,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -153,7 +153,7 @@ fun LoginSection(viewModel: AdminViewModel) {
                                 } else false
                             },
                             colors = textFieldColors,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
                         Spacer(modifier = Modifier.height(40.dp))
 
@@ -166,7 +166,7 @@ fun LoginSection(viewModel: AdminViewModel) {
                                 contentColor = Color.White,
                                 disabledContainerColor = VibrantPink.copy(alpha = 0.3f)
                             ),
-                            shape = RoundedCornerShape(24.dp)
+                            shape = RoundedCornerShape(12.dp)
                         ) {
                             Text("Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         }
@@ -184,7 +184,7 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
         viewModel.loadAllDashboardLeaderboards()
     }
 
-    val cardShape = RoundedCornerShape(32.dp)
+    val cardShape = RoundedCornerShape(8.dp)
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -206,7 +206,7 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.05f)),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
                 ) {
                     Row(modifier = Modifier.padding(24.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -245,7 +245,7 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
                     Card(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.02f)),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(8.dp),
                         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
                     ) {
                         Column(modifier = Modifier.padding(20.dp).fillMaxWidth()) {

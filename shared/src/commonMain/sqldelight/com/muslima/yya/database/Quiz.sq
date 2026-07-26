@@ -9,7 +9,8 @@ CREATE TABLE QuestionEntity (
     text TEXT NOT NULL,
     correctAnswer TEXT NOT NULL,
     options TEXT NOT NULL,
-    points INTEGER NOT NULL DEFAULT 10
+    points INTEGER NOT NULL DEFAULT 10,
+    timeLimitSeconds INTEGER NOT NULL DEFAULT 15
 );
 
 CREATE TABLE StudentEntity (
@@ -46,7 +47,7 @@ DELETE FROM QuizEntity WHERE id = ?;
 
 -- Queries for Question
 insertQuestion:
-INSERT OR REPLACE INTO QuestionEntity(id, quizId, text, correctAnswer, options, points) VALUES (?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO QuestionEntity(id, quizId, text, correctAnswer, options, points, timeLimitSeconds) VALUES (?, ?, ?, ?, ?, ?, ?);
 
 getQuestionsForQuiz:
 SELECT * FROM QuestionEntity WHERE quizId = ?;

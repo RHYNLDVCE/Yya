@@ -16,7 +16,8 @@ data class Question(
     val text: String,
     val correctAnswer: String,
     val options: List<String>,
-    val points: Int = 10
+    val points: Int = 10,
+    val timeLimitSeconds: Int = 15
 )
 
 @Serializable

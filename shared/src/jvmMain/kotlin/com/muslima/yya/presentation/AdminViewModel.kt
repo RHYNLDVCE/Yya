@@ -28,7 +28,11 @@ data class AdminState(
     val studentsList: List<Student> = emptyList(),
     val quizzesList: List<Quiz> = emptyList(),
     val selectedQuizDetail: Quiz? = null,
-    val dashboardLeaderboards: Map<String, List<LeaderboardEntry>> = emptyMap()
+    val dashboardLeaderboards: Map<String, List<LeaderboardEntry>> = emptyMap(),
+    val sentQuestionIds: Set<String> = emptySet(),
+    val answeredStudentsForCurrentQuestion: Set<String> = emptySet(),
+    val isAcceptingAnswers: Boolean = false,
+    val isQuizStarted: Boolean = false
 )
 
 class AdminViewModel(
@@ -46,16 +50,31 @@ class AdminViewModel(
             server.events.collect { event ->
                 when (event) {
                     is WsMessage.StudentJoined -> {
-                        val entry = LeaderboardEntry(studentId = event.student.id, quizId = event.quizId, studentName = "${event.student.firstName} ${event.student.lastName}")
-                        _state.update { it.copy(connectedStudents = it.connectedStudents + entry) }
-                        repository.createLeaderboardEntry(entry)
+                        val existingEntry = state.value.connectedStudents.find { it.studentId == event.student.id }
+                        if (existingEntry == null) {
+                            val entry = LeaderboardEntry(studentId = event.student.id, quizId = event.quizId, studentName = "${event.student.firstName} ${event.student.lastName}")
+                            _state.update { it.copy(connectedStudents = it.connectedStudents + entry) }
+                            repository.createLeaderboardEntry(entry)
+                        } else {
+                            server.broadcast(WsMessage.JoinRejected(event.student.id, "You have already completed this quiz!"))
+                        }
                         server.broadcast(WsMessage.LeaderboardUpdate(_state.value.connectedStudents))
                         loadStudents() // Refresh list just in case
                     }
                     is WsMessage.SubmitAnswer -> {
-                        val isCorrect = state.value.currentQuestion?.correctAnswer == event.answer
-                        val pointsEarned = if (isCorrect) (state.value.currentQuestion?.points?.toLong() ?: 10L) else 0L
-                        val currentQuizId = state.value.currentQuiz?.id
+                        val currentState = state.value
+                        if (!currentState.isAcceptingAnswers) {
+                            return@collect
+                        }
+                        if (currentState.answeredStudentsForCurrentQuestion.contains(event.studentId)) {
+                            // Ignore duplicate submission
+                            return@collect
+                        }
+                        _state.update { it.copy(answeredStudentsForCurrentQuestion = it.answeredStudentsForCurrentQuestion + event.studentId) }
+
+                        val isCorrect = currentState.currentQuestion?.correctAnswer == event.answer
+                        val pointsEarned = if (isCorrect) (currentState.currentQuestion?.points?.toLong() ?: 10L) else 0L
+                        val currentQuizId = currentState.currentQuiz?.id
                         if (currentQuizId != null) {
                             if (isCorrect) {
                                 repository.updateLeaderboardScore(event.studentId, currentQuizId, pointsEarned, event.timeTakenMs)
@@ -65,17 +84,17 @@ class AdminViewModel(
                         }
                         
                         // Update local state leaderboard
-                        _state.update { currentState ->
-                            val updatedStudents = currentState.connectedStudents.map {
+                        _state.update { state ->
+                            val updatedStudents = state.connectedStudents.map {
                                 if (it.studentId == event.studentId) {
                                     it.copy(score = it.score + pointsEarned, timeTakenMs = it.timeTakenMs + event.timeTakenMs)
                                 } else it
                             }
-                            currentState.copy(connectedStudents = updatedStudents)
+                            state.copy(connectedStudents = updatedStudents)
                         }
                         server.broadcast(WsMessage.LeaderboardUpdate(_state.value.connectedStudents))
 
-                        server.broadcast(WsMessage.AnswerResult(event.studentId, isCorrect, state.value.currentQuestion?.correctAnswer ?: ""))
+                        server.broadcast(WsMessage.AnswerResult(event.studentId, isCorrect, currentState.currentQuestion?.correctAnswer ?: ""))
                     }
                     else -> {}
                 }
@@ -159,7 +178,7 @@ class AdminViewModel(
     }
 
     fun selectQuizForDetail(quiz: Quiz?) {
-        _state.update { it.copy(selectedQuizDetail = quiz) }
+        _state.update { it.copy(selectedQuizDetail = quiz, isQuizStarted = false) }
         viewModelScope.launch {
             if (quiz != null) {
                 val leaderboard = repository.getLeaderboard(quiz.id).first()
@@ -180,7 +199,7 @@ class AdminViewModel(
         }
     }
 
-    fun addQuestionToQuiz(quizId: String, text: String, options: List<String>, correctAnswer: String, points: Int) {
+    fun addQuestionToQuiz(quizId: String, text: String, options: List<String>, correctAnswer: String, points: Int, timeLimitSeconds: Int) {
         val quiz = state.value.quizzesList.find { it.id == quizId } ?: return
         val newQuestion = Question(
             id = UUID.randomUUID().toString(),
@@ -188,7 +207,8 @@ class AdminViewModel(
             text = text,
             correctAnswer = correctAnswer,
             options = options,
-            points = points
+            points = points,
+            timeLimitSeconds = timeLimitSeconds
         )
         val updatedQuiz = quiz.copy(questions = quiz.questions + newQuestion)
         updateQuiz(updatedQuiz)
@@ -228,9 +248,37 @@ class AdminViewModel(
     }
 
     fun sendQuestion(question: Question) {
-        _state.update { it.copy(currentQuestion = question, currentQuiz = state.value.selectedQuizDetail) }
-        viewModelScope.launch {
-            server.broadcast(WsMessage.NextQuestion(question, timeLimitMs = 15000))
+        _state.update { 
+            it.copy(
+                currentQuestion = question, 
+                currentQuiz = state.value.selectedQuizDetail,
+                sentQuestionIds = it.sentQuestionIds + question.id,
+                answeredStudentsForCurrentQuestion = emptySet(),
+                isAcceptingAnswers = true
+            ) 
         }
+        viewModelScope.launch {
+            server.broadcast(WsMessage.NextQuestion(question, timeLimitMs = question.timeLimitSeconds * 1000L))
+            
+            kotlinx.coroutines.delay(question.timeLimitSeconds * 1000L)
+            if (_state.value.currentQuestion?.id == question.id) {
+                _state.update { it.copy(isAcceptingAnswers = false) }
+            }
+        }
+    }
+
+    fun startQuiz() {
+        _state.update { it.copy(isQuizStarted = true, sentQuestionIds = emptySet()) }
+    }
+
+    fun stopQuiz() {
+        _state.update { it.copy(isQuizStarted = false, currentQuestion = null) }
+    }
+
+    fun endQuizAndPublishScores() {
+        viewModelScope.launch {
+            server.broadcast(WsMessage.QuizEnded(state.value.connectedStudents))
+        }
+        stopQuiz()
     }
 }

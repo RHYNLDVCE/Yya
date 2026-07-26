@@ -30,7 +30,8 @@ class QuizRepositoryImpl(
                     text = q.text,
                     correctAnswer = q.correctAnswer,
                     options = Json.encodeToString(q.options),
-                    points = q.points.toLong()
+                    points = q.points.toLong(),
+                    timeLimitSeconds = q.timeLimitSeconds.toLong()
                 )
             }
         }
@@ -47,7 +48,8 @@ class QuizRepositoryImpl(
                     text = q.text,
                     correctAnswer = q.correctAnswer,
                     options = Json.decodeFromString(q.options),
-                    points = q.points.toInt()
+                    points = q.points.toInt(),
+                    timeLimitSeconds = q.timeLimitSeconds.toInt()
                 )
             }
             Quiz(id = entity.id, title = entity.title, questions = questions)
@@ -64,7 +66,8 @@ class QuizRepositoryImpl(
                     text = q.text,
                     correctAnswer = q.correctAnswer,
                     options = Json.encodeToString(q.options),
-                    points = q.points.toLong()
+                    points = q.points.toLong(),
+                    timeLimitSeconds = q.timeLimitSeconds.toLong()
                 )
             }
         }
