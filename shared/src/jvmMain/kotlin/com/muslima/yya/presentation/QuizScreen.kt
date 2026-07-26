@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import com.muslima.yya.domain.model.Question
-import dev.chrisbanes.haze.hazeEffect
+
 
 @Composable
 fun QuizListSection(viewModel: AdminViewModel, state: AdminState) {
@@ -27,17 +27,14 @@ fun QuizListSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.padding(40.dp).fillMaxSize()) {
-            Text("All Quizzes", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("All Quizzes", style = MaterialTheme.typography.headlineMedium, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
                 items(state.quizzesList) { quiz ->
@@ -67,18 +64,15 @@ fun QuizUpdateSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(24.dp)) {
             Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(end = 16.dp)) {
-                Text("Select Quiz", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                Text("Select Quiz", style = MaterialTheme.typography.headlineSmall, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn {
                     items(state.quizzesList) { quiz ->
@@ -98,7 +92,7 @@ fun QuizUpdateSection(viewModel: AdminViewModel, state: AdminState) {
                 var title by remember(selectedQuiz) { mutableStateOf(selectedQuiz!!.title) }
 
                 Column(modifier = Modifier.weight(2f).fillMaxHeight().padding(16.dp)) {
-                    Text("Update Details", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                    Text("Update Details", style = MaterialTheme.typography.headlineSmall, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = title,
@@ -115,7 +109,7 @@ fun QuizUpdateSection(viewModel: AdminViewModel, state: AdminState) {
                             selectedQuiz = null
                         },
                         modifier = Modifier.align(Alignment.End).height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
+                        colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text("Update Quiz", fontWeight = FontWeight.Bold, color = Color.White)
@@ -136,17 +130,14 @@ fun QuizDeleteSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.padding(40.dp).fillMaxSize()) {
-            Text("Delete Quizzes", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("Delete Quizzes", style = MaterialTheme.typography.headlineMedium, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
                 items(state.quizzesList) { quiz ->
@@ -164,7 +155,7 @@ fun QuizDeleteSection(viewModel: AdminViewModel, state: AdminState) {
                             }
                             Button(
                                 onClick = { viewModel.deleteQuiz(quiz.id) },
-                                colors = ButtonDefaults.buttonColors(containerColor = SoftCoral),
+                                colors = ButtonDefaults.buttonColors(containerColor = WarningAccent),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text("Delete", color = Color.White, fontWeight = FontWeight.Bold)
@@ -187,17 +178,14 @@ fun AddQuizSection(viewModel: AdminViewModel) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.fillMaxSize().padding(40.dp)) {
-            Text("Create New Quiz", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = VibrantPink)
+            Text("Create New Quiz", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = PrimaryAccent)
             Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(
                 value = title,
@@ -215,7 +203,7 @@ fun AddQuizSection(viewModel: AdminViewModel) {
                 },
                 enabled = title.isNotBlank(),
                 modifier = Modifier.align(Alignment.End).height(56.dp).width(160.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
+                colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Create Quiz", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
@@ -229,7 +217,7 @@ fun AddQuizSection(viewModel: AdminViewModel) {
                 showDialog = false
                 title = ""
             },
-            title = { Text("Quiz Created!", color = VibrantPink, fontWeight = FontWeight.Bold) },
+            title = { Text("Quiz Created!", color = PrimaryAccent, fontWeight = FontWeight.Bold) },
             text = { Text("Your quiz was created successfully. Do you want to add questions now?", color = TextPrimary) },
             containerColor = Color(0xFF1E1E2E), // Solid dark color for dialogs
             confirmButton = {
@@ -239,7 +227,7 @@ fun AddQuizSection(viewModel: AdminViewModel) {
                         title = ""
                         viewModel.selectQuizForDetail(newlyCreatedQuiz)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha)
+                    colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent)
                 ) {
                     Text("Yes", color = Color.White, fontWeight = FontWeight.Bold)
                 }
@@ -263,12 +251,9 @@ fun QuizRightPanel(viewModel: AdminViewModel, state: AdminState, quiz: com.musli
     val cardShape = RoundedCornerShape(8.dp)
 
     Card(
-        modifier = Modifier.fillMaxHeight().hazeEffect(
-            state = LocalHazeState.current,
-            style = HeavyBlurStyle
-        ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+        modifier = Modifier.fillMaxHeight(),
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
@@ -277,19 +262,19 @@ fun QuizRightPanel(viewModel: AdminViewModel, state: AdminState, quiz: com.musli
                 Row(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp), horizontalArrangement = Arrangement.Center) {
                     Button(
                         onClick = { rightPanelTab = "Leaderboard" },
-                        colors = ButtonDefaults.buttonColors(containerColor = if (rightPanelTab == "Leaderboard") DarkMatcha else Color.White.copy(alpha = 0.1f)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (rightPanelTab == "Leaderboard") PrimaryAccent else SecondaryAccent),
                         shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp, topEnd = 0.dp, bottomEnd = 0.dp),
                         elevation = ButtonDefaults.buttonElevation(0.dp)
                     ) {
-                        Text("Leaderboard", color = Color.White)
+                        Text("Leaderboard", color = if (rightPanelTab == "Leaderboard") Color.White else TextPrimary)
                     }
                     Button(
                         onClick = { rightPanelTab = "Scan" },
-                        colors = ButtonDefaults.buttonColors(containerColor = if (rightPanelTab == "Scan") DarkMatcha else Color.White.copy(alpha = 0.1f)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (rightPanelTab == "Scan") PrimaryAccent else SecondaryAccent),
                         shape = RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 12.dp, bottomEnd = 12.dp),
                         elevation = ButtonDefaults.buttonElevation(0.dp)
                     ) {
-                        Text("Scan Student", color = Color.White)
+                        Text("Scan Student", color = if (rightPanelTab == "Scan") Color.White else TextPrimary)
                     }
                 }
             }
@@ -302,7 +287,7 @@ fun QuizRightPanel(viewModel: AdminViewModel, state: AdminState, quiz: com.musli
                 Box {
                     Button(
                         onClick = { expanded = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = VibrantPink),
+                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent, contentColor = Color.White),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(if (selectedStudentId == null) "Select Student for QR" else state.studentsList.find { it.id == selectedStudentId }?.let { "${it.firstName} ${it.lastName}" } ?: "Select Student", fontWeight = FontWeight.Bold, color = Color.White)
@@ -332,7 +317,7 @@ fun QuizRightPanel(viewModel: AdminViewModel, state: AdminState, quiz: com.musli
                                             Box(
                                                 modifier = Modifier
                                                     .size(40.dp)
-                                                    .background(DarkMatcha.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
+                                                    .background(SecondaryAccent.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
                                                 contentAlignment = Alignment.Center
                                             ) {
                                                 Text(
@@ -396,7 +381,7 @@ fun QuizRightPanel(viewModel: AdminViewModel, state: AdminState, quiz: com.musli
                         ) {
                             Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Text(student.studentName, color = TextPrimary, fontWeight = FontWeight.SemiBold)
-                                Text("${student.score} pts", color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                                Text("${student.score} pts", color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }
@@ -424,17 +409,14 @@ fun QuizDetailSection(viewModel: AdminViewModel, state: AdminState) {
     Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         // Setup left column
         Card(
-            modifier = Modifier.weight(1f).fillMaxHeight().hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-            colors = CardDefaults.cardColors(containerColor = GlassContainer),
-            border = BorderStroke(1.dp, GlassBorder),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+            border = BorderStroke(1.dp, BorderColor),
             elevation = CardDefaults.cardElevation(0.dp),
             shape = cardShape
         ) {
             Column(modifier = Modifier.padding(32.dp).fillMaxSize()) {
-                Text("Quiz: ${quiz.title}", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = VibrantPink)
+                Text("Quiz: ${quiz.title}", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = PrimaryAccent)
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(if (editingQuestionId != null) "Update Question" else "Add Question", style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.Bold)
@@ -465,11 +447,11 @@ fun QuizDetailSection(viewModel: AdminViewModel, state: AdminState) {
                             listOf("A", "B", "C", "D").forEach { opt ->
                                 Button(
                                     onClick = { correctOption = opt },
-                                    colors = ButtonDefaults.buttonColors(containerColor = if (correctOption == opt) VibrantPink else Color.White.copy(alpha = 0.1f)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = if (correctOption == opt) PrimaryAccent else SecondaryAccent),
                                     shape = RoundedCornerShape(8.dp),
                                     elevation = ButtonDefaults.buttonElevation(0.dp)
                                 ) {
-                                    Text(opt, color = Color.White)
+                                    Text(opt, color = if (correctOption == opt) Color.White else TextPrimary)
                                 }
                             }
                         }
@@ -532,7 +514,7 @@ fun QuizDetailSection(viewModel: AdminViewModel, state: AdminState) {
                             newQuestionText = ""; optionA = ""; optionB = ""; optionC = ""; optionD = ""; correctOption = "A"; points = "10"; timeLimitSeconds = "15"
                         },
                         enabled = newQuestionText.isNotBlank() && optionA.isNotBlank() && optionB.isNotBlank() && optionC.isNotBlank() && optionD.isNotBlank(),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
+                        colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(if (editingQuestionId != null) "Update Question" else "Add Question", fontWeight = FontWeight.Bold, color = Color.White)
@@ -544,7 +526,7 @@ fun QuizDetailSection(viewModel: AdminViewModel, state: AdminState) {
                     Text("Questions (${quiz.questions.size}):", fontWeight = FontWeight.Bold, color = TextPrimary)
                     Button(
                         onClick = { viewModel.startQuiz() },
-                        colors = ButtonDefaults.buttonColors(containerColor = VibrantPurple)
+                        colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent)
                     ) {
                         Text("Start Quiz", fontWeight = FontWeight.Bold, color = Color.White)
                     }
@@ -582,7 +564,7 @@ fun QuizDetailSection(viewModel: AdminViewModel, state: AdminState) {
                                         timeLimitSeconds = q.timeLimitSeconds.toString()
                                     }
                                 ) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Edit Question", tint = VibrantPink)
+                                    Icon(Icons.Default.Edit, contentDescription = "Edit Question", tint = PrimaryAccent)
                                 }
                             }
                         }
@@ -606,21 +588,18 @@ fun ActiveQuizSection(viewModel: AdminViewModel, state: AdminState) {
     Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         // Left Column: Questions + Send Button
         Card(
-            modifier = Modifier.weight(1f).fillMaxHeight().hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-            colors = CardDefaults.cardColors(containerColor = GlassContainer),
-            border = BorderStroke(1.dp, GlassBorder),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+            border = BorderStroke(1.dp, BorderColor),
             elevation = CardDefaults.cardElevation(0.dp),
             shape = cardShape
         ) {
             Column(modifier = Modifier.padding(32.dp).fillMaxSize()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Active Quiz: ${quiz.title}", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = VibrantPink)
+                    Text("Active Quiz: ${quiz.title}", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = PrimaryAccent)
                     Button(
                         onClick = { viewModel.stopQuiz() },
-                        colors = ButtonDefaults.buttonColors(containerColor = SoftCoral)
+                        colors = ButtonDefaults.buttonColors(containerColor = WarningAccent)
                     ) {
                         Text("Stop Quiz", fontWeight = FontWeight.Bold, color = Color.White)
                     }
@@ -635,7 +614,7 @@ fun ActiveQuizSection(viewModel: AdminViewModel, state: AdminState) {
                             Spacer(modifier = Modifier.height(24.dp))
                             Button(
                                 onClick = { viewModel.endQuizAndPublishScores() },
-                                colors = ButtonDefaults.buttonColors(containerColor = VibrantPurple),
+                                colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.height(56.dp).padding(horizontal = 32.dp)
                             ) {
@@ -663,7 +642,7 @@ fun ActiveQuizSection(viewModel: AdminViewModel, state: AdminState) {
                                         onClick = { viewModel.sendQuestion(q) },
                                         enabled = !isSent,
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = if (isSent) Color.Gray else VibrantPink,
+                                            containerColor = if (isSent) Color.Gray else PrimaryAccent,
                                             disabledContainerColor = Color.White.copy(alpha = 0.2f)
                                         ),
                                         shape = RoundedCornerShape(8.dp)

@@ -25,6 +25,7 @@ data class AdminState(
     val currentQuestion: Question? = null,
     val qrCodeContent: String? = null,
     val isLoggedIn: Boolean = false,
+    val loginError: String? = null,
     val studentsList: List<Student> = emptyList(),
     val quizzesList: List<Quiz> = emptyList(),
     val selectedQuizDetail: Quiz? = null,
@@ -157,10 +158,21 @@ class AdminViewModel(
 
     fun login(user: String, pass: String) {
         if (user == "yya" && pass == "asaddimuslima") {
-            _state.update { it.copy(isLoggedIn = true) }
+            _state.update { it.copy(isLoggedIn = true, loginError = null) }
             val ip = getLocalIpAddress()
             startServer(ip)
+        } else {
+            _state.update { it.copy(loginError = "Invalid username or password") }
         }
+    }
+    
+    fun clearLoginError() {
+        _state.update { it.copy(loginError = null) }
+    }
+    
+    fun logout() {
+        _state.update { it.copy(isLoggedIn = false, loginError = null) }
+        stopServer()
     }
     
     fun stopServer() {

@@ -18,14 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.chrisbanes.haze.hazeEffect
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
-fun LoginSection(viewModel: AdminViewModel) {
+fun LoginSection(viewModel: AdminViewModel, state: AdminState) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -33,11 +33,11 @@ fun LoginSection(viewModel: AdminViewModel) {
     val cardShape = RoundedCornerShape(8.dp)
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = VibrantPink,
+        focusedBorderColor = PrimaryAccent,
         unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
-        focusedLabelColor = VibrantPink,
+        focusedLabelColor = PrimaryAccent,
         unfocusedLabelColor = TextSecondary,
-        cursorColor = VibrantPink,
+        cursorColor = PrimaryAccent,
         unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
         focusedContainerColor = Color.White.copy(alpha = 0.1f),
         focusedTextColor = TextPrimary,
@@ -87,12 +87,9 @@ fun LoginSection(viewModel: AdminViewModel) {
                 Card(
                     modifier = Modifier
                         .width(420.dp)
-                        .hazeEffect(
-                            state = LocalHazeState.current,
-                            style = HeavyBlurStyle
-                        ),
-                    colors = CardDefaults.cardColors(containerColor = GlassContainer),
-                    border = BorderStroke(1.dp, GlassBorder),
+                        ,
+                    colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+                    border = BorderStroke(1.dp, BorderColor),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     shape = cardShape
                 ) {
@@ -103,7 +100,7 @@ fun LoginSection(viewModel: AdminViewModel) {
                         Text(
                             "Yya Admin",
                             style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.ExtraBold),
-                            color = VibrantPink
+                            color = PrimaryAccent
                         )
                         Text(
                             "Welcome back",
@@ -114,7 +111,7 @@ fun LoginSection(viewModel: AdminViewModel) {
 
                         OutlinedTextField(
                             value = username,
-                            onValueChange = { username = it },
+                            onValueChange = { username = it; viewModel.clearLoginError() },
                             label = { Text("Username") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth().onKeyEvent {
@@ -132,14 +129,14 @@ fun LoginSection(viewModel: AdminViewModel) {
 
                         OutlinedTextField(
                             value = password,
-                            onValueChange = { password = it },
+                            onValueChange = { password = it; viewModel.clearLoginError() },
                             label = { Text("Password") },
                             singleLine = true,
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             trailingIcon = {
                                 val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(image, "Toggle password visibility", tint = VibrantPink)
+                                    Icon(image, "Toggle password visibility", tint = PrimaryAccent)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth().focusRequester(passwordFocusRequester).onKeyEvent {
@@ -155,16 +152,26 @@ fun LoginSection(viewModel: AdminViewModel) {
                             colors = textFieldColors,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        Spacer(modifier = Modifier.height(40.dp))
+                        if (state.loginError != null) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = state.loginError,
+                                color = ErrorAccent,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(32.dp))
+                        } else {
+                            Spacer(modifier = Modifier.height(40.dp))
+                        }
 
                         Button(
                             onClick = { viewModel.login(username, password) },
                             enabled = username.isNotBlank() && password.isNotBlank(),
                             modifier = Modifier.fillMaxWidth().height(56.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = VibrantPink,
+                                containerColor = PrimaryAccent,
                                 contentColor = Color.White,
-                                disabledContainerColor = VibrantPink.copy(alpha = 0.3f)
+                                disabledContainerColor = PrimaryAccent.copy(alpha = 0.3f)
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -188,18 +195,15 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         androidx.compose.foundation.lazy.LazyColumn(modifier = Modifier.padding(40.dp).fillMaxSize()) {
             item {
-                Text("Dashboard Overview", style = MaterialTheme.typography.headlineLarge, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                Text("Dashboard Overview", style = MaterialTheme.typography.headlineLarge, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Server Status Card
@@ -214,22 +218,22 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
                             Text("Server Status", color = TextSecondary, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             if (state.serverRunning) {
-                                Text("Running", color = DarkMatcha, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                                Text("Running", color = SecondaryAccent, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text("Address: ws://${state.serverIp}:8080/quiz", color = TextPrimary, style = MaterialTheme.typography.bodyLarge)
                             } else {
-                                Text("Stopped", color = SoftCoral, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                                Text("Stopped", color = WarningAccent, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                             }
                         }
                         Column(modifier = Modifier.weight(1f)) {
                             Text("Total Quizzes", color = TextSecondary, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("${state.quizzesList.size}", color = VibrantPink, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                            Text("${state.quizzesList.size}", color = PrimaryAccent, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         }
                         Column(modifier = Modifier.weight(1f)) {
                             Text("Total Students", color = TextSecondary, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("${state.studentsList.size}", color = VibrantPink, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                            Text("${state.studentsList.size}", color = PrimaryAccent, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -249,7 +253,7 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
                         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
                     ) {
                         Column(modifier = Modifier.padding(20.dp).fillMaxWidth()) {
-                            Text(quiz.title, style = MaterialTheme.typography.titleMedium, color = DarkMatcha, fontWeight = FontWeight.Bold)
+                            Text(quiz.title, style = MaterialTheme.typography.titleMedium, color = SecondaryAccent, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(16.dp))
 
                             if (leaderboard.isEmpty()) {
@@ -269,18 +273,78 @@ fun DashboardSection(viewModel: AdminViewModel, state: AdminState) {
                                                     modifier = Modifier
                                                         .fillMaxHeight()
                                                         .fillMaxWidth(fraction)
-                                                        .background(VibrantPink, RoundedCornerShape(12.dp))
+                                                        .background(PrimaryAccent, RoundedCornerShape(12.dp))
                                                 )
                                             }
                                         }
                                         Spacer(modifier = Modifier.width(16.dp))
-                                        Text("${entry.score} pts", color = DarkMatcha, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
+                                        Text("${entry.score} pts", color = SecondaryAccent, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+@Composable
+fun SettingsSection(viewModel: AdminViewModel, state: AdminState) {
+    val cardShape = RoundedCornerShape(8.dp)
+    Card(
+        modifier = Modifier
+            .fillMaxSize()
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
+        elevation = CardDefaults.cardElevation(0.dp),
+        shape = cardShape
+    ) {
+        Column(modifier = Modifier.padding(40.dp).fillMaxSize()) {
+            Text("Settings", style = MaterialTheme.typography.headlineLarge, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Preferences", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Add settings options here
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.02f)),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+            ) {
+                Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Dark Mode", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        Text("Enable or disable dark mode for the admin panel", color = TextSecondary, style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Switch(checked = true, onCheckedChange = { /* TODO */ }, colors = SwitchDefaults.colors(checkedThumbColor = PrimaryAccent, checkedTrackColor = PrimaryAccent.copy(alpha = 0.5f)))
+                }
+            }
+
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.02f)),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+            ) {
+                Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Notifications", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        Text("Receive alerts for new student registrations", color = TextSecondary, style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Switch(checked = false, onCheckedChange = { /* TODO */ }, colors = SwitchDefaults.colors(checkedThumbColor = PrimaryAccent, checkedTrackColor = PrimaryAccent.copy(alpha = 0.5f)))
+                }
+            }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            Button(
+                onClick = { viewModel.logout() },
+                modifier = Modifier.align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(containerColor = ErrorAccent)
+            ) {
+                Text("Logout", fontWeight = FontWeight.Bold, color = Color.White)
             }
         }
     }

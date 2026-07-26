@@ -16,33 +16,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
 
-// Dark Theme & Glass Colors
-val DarkBackground = Color(0xFF0B0D17)
-val MatchaGreen = Color(0xFFE9EDC9)
-val DarkMatcha = Color(0xFFA3B18A)
-val VibrantPink = Color(0xFFFF007F)
-val VibrantRed = Color(0xFFFF4D4D)
-val VibrantPurple = Color(0xFF9D00FF)
-val GlassContainer = Color(0xFF1E1E2E).copy(alpha = 0.4f)
-val GlassBorder = Color.White.copy(alpha = 0.2f)
-val TextPrimary = Color(0xFFFFFFFF)
-val TextSecondary = Color(0xFFA0A0B0)
-val SoftCoral = Color(0xFFFFA69E)
-
-// Global state and style for heavy blur glassmorphism
-val LocalHazeState = compositionLocalOf { HazeState() }
-val HeavyBlurStyle = HazeStyle(
-    blurRadius = 100.dp,
-    tint = HazeTint(Color.Black.copy(alpha = 0.3f))
-)
+// Modern Admin Light Theme (Tailwind inspired)
+val DarkBackground = Color(0xFFF9FAFB) // App background (light grey)
+val PrimaryAccent = Color(0xFF111827) // Dark for primary actions
+val SecondaryAccent = Color(0xFFF3F4F6) // Active menu background
+val ErrorAccent = Color(0xFFEF4444) // Red for logout/errors
+val WarningAccent = Color(0xFFF59E0B) // Amber for stars/time
+val SuccessAccent = Color(0xFF10B981) // Emerald for connected status
+val SurfaceColor = Color(0xFFFFFFFF) // White for sidebar and cards
+val BorderColor = Color(0xFFE5E7EB) // Subtle borders
+val TextPrimary = Color(0xFF111827) // Dark text
+val TextSecondary = Color(0xFF6B7280) // Gray text
+val SurfaceTint = Color(0xFFF3F4F6)
 
 // Define a professional typography configuration.
-// Replace FontFamily.SansSerif with a loaded custom font (e.g., Inter) if needed.
 val ProfessionalTypography = Typography(
     headlineLarge = TextStyle(
         fontFamily = FontFamily.SansSerif,
@@ -88,101 +76,64 @@ val ProfessionalTypography = Typography(
     )
 )
 
-
 @Composable
 fun AdminScreen(viewModel: AdminViewModel) {
     val state by viewModel.state.collectAsState()
     var selectedMenu by remember { mutableStateOf("Dashboard") }
     var selectedSubMenu by remember { mutableStateOf<String?>(null) }
 
-    val hazeState = remember { HazeState() }
-
     MaterialTheme(
-        colorScheme = darkColorScheme(
+        colorScheme = lightColorScheme(
             background = DarkBackground,
-            surface = Color.Transparent,
+            surface = SurfaceColor,
             onSurface = TextPrimary,
-            primary = VibrantPink,
+            primary = PrimaryAccent,
             onPrimary = Color.White
         ),
         typography = ProfessionalTypography
     ) {
-        CompositionLocalProvider(LocalHazeState provides hazeState) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(DarkBackground)
-                    .haze(state = hazeState)
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val canvasWidth = size.width
-                    val canvasHeight = size.height
-
-                    // Helper to draw a cute, stylized Question Mark
-                    fun drawQuestionMark(center: Offset, scale: Float, color: Color) {
-                        val stroke = Stroke(width = 12 * scale, cap = StrokeCap.Round)
-
-                        // The Hook of the ?
-                        val hookPath = Path().apply {
-                            moveTo(center.x, center.y - 40 * scale)
-                            cubicTo(
-                                center.x - 50 * scale, center.y - 100 * scale,
-                                center.x + 50 * scale, center.y - 100 * scale,
-                                center.x + 10 * scale, center.y - 10 * scale
-                            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(DarkBackground)
+        ) {
+            if (!state.isLoggedIn) {
+                LoginSection(viewModel, state)
+            } else {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    LeftPanel(
+                        selectedMenu = selectedMenu,
+                        selectedSubMenu = selectedSubMenu,
+                        onMenuSelected = { menu, subMenu ->
+                            selectedMenu = menu
+                            selectedSubMenu = subMenu
+                            viewModel.selectQuizForDetail(null)
                         }
-                        drawPath(hookPath, color = color, style = stroke)
+                    )
 
-                        // The Dot
-                        drawCircle(color = color, radius = 8 * scale, center = Offset(center.x, center.y + 30 * scale))
-                    }
-
-                    // Draw question marks floating around
-                    drawQuestionMark(Offset(canvasWidth * 0.2f, canvasHeight * 0.25f), 1.2f, DarkMatcha.copy(alpha = 0.2f))
-                    drawQuestionMark(Offset(canvasWidth * 0.85f, canvasHeight * 0.65f), 2.0f, VibrantPink.copy(alpha = 0.15f))
-                    drawQuestionMark(Offset(canvasWidth * 0.5f, canvasHeight * 0.45f), 0.8f, VibrantPurple.copy(alpha = 0.15f))
-                    drawQuestionMark(Offset(canvasWidth * 0.15f, canvasHeight * 0.85f), 1.0f, VibrantRed.copy(alpha = 0.1f))
-                }
-
-                if (!state.isLoggedIn) {
-                    LoginSection(viewModel)
-                } else {
-                    Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                        LeftPanel(
-                            selectedMenu = selectedMenu,
-                            selectedSubMenu = selectedSubMenu,
-                            onMenuSelected = { menu, subMenu ->
-                                selectedMenu = menu
-                                selectedSubMenu = subMenu
-                                viewModel.selectQuizForDetail(null)
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        Box(modifier = Modifier.weight(1f).fillMaxHeight().padding(vertical = 16.dp, horizontal = 24.dp)) {
-                            when (selectedMenu) {
-                                "Dashboard" -> DashboardSection(viewModel, state)
-                                "Students" -> StudentsSection(viewModel, state, selectedSubMenu)
-                                "Quiz" -> {
-                                    if (state.selectedQuizDetail != null) {
-                                        if (state.isQuizStarted) {
-                                            ActiveQuizSection(viewModel, state)
-                                        } else {
-                                            QuizDetailSection(viewModel, state)
-                                        }
+                    Box(modifier = Modifier.weight(1f).fillMaxHeight().padding(16.dp)) {
+                        when (selectedMenu) {
+                            "Dashboard" -> DashboardSection(viewModel, state)
+                            "Students" -> StudentsSection(viewModel, state, selectedSubMenu)
+                            "Quiz" -> {
+                                if (state.selectedQuizDetail != null) {
+                                    if (state.isQuizStarted) {
+                                        ActiveQuizSection(viewModel, state)
                                     } else {
-                                        when (selectedSubMenu) {
-                                            "Add Quiz" -> AddQuizSection(viewModel)
-                                            "List Quiz" -> QuizListSection(viewModel, state)
-                                            "Update Quiz" -> QuizUpdateSection(viewModel, state)
-                                            "Delete Quiz" -> QuizDeleteSection(viewModel, state)
-                                            else -> QuizListSection(viewModel, state)
-                                        }
+                                        QuizDetailSection(viewModel, state)
+                                    }
+                                } else {
+                                    when (selectedSubMenu) {
+                                        "Add Quiz" -> AddQuizSection(viewModel)
+                                        "List Quiz" -> QuizListSection(viewModel, state)
+                                        "Update Quiz" -> QuizUpdateSection(viewModel, state)
+                                        "Delete Quiz" -> QuizDeleteSection(viewModel, state)
+                                        else -> QuizListSection(viewModel, state)
                                     }
                                 }
-                                else -> DashboardSection(viewModel, state)
                             }
+                            "Settings" -> SettingsSection(viewModel, state)
+                            else -> DashboardSection(viewModel, state)
                         }
                     }
                 }

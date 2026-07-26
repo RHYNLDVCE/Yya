@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.chrisbanes.haze.hazeEffect
+
 
 @Composable
 fun LeftPanel(
@@ -31,12 +31,9 @@ fun LeftPanel(
         modifier = Modifier
             .width(260.dp)
             .fillMaxHeight()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         shape = cardShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -44,7 +41,7 @@ fun LeftPanel(
             Text(
                 "Yya Admin",
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
-                color = VibrantPink,
+                color = PrimaryAccent,
                 modifier = Modifier.padding(start = 8.dp, bottom = 48.dp)
             )
 
@@ -99,6 +96,18 @@ fun LeftPanel(
                     }
                 }
             }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            
+            HorizontalDivider(color = BorderColor, modifier = Modifier.padding(vertical = 16.dp))
+            
+            MenuButton(
+                title = "Settings",
+                isSelected = selectedMenu == "Settings",
+                isExpandable = false,
+                isExpanded = false,
+                onClick = { onMenuSelected("Settings", null) }
+            )
         }
     }
 }
@@ -111,8 +120,9 @@ fun MenuButton(
     isExpanded: Boolean = false,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) Color.White.copy(alpha = 0.15f) else Color.Transparent
-    val contentColor = if (isSelected) VibrantPink else TextPrimary
+    val backgroundColor = if (isSelected) SecondaryAccent else Color.Transparent
+    val contentColor = if (isSelected) TextPrimary else TextSecondary
+    val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold
 
     val rotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
@@ -133,7 +143,7 @@ fun MenuButton(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(title, fontWeight = fontWeight, fontSize = 15.sp)
 
             if (isExpandable) {
                 Icon(
@@ -149,8 +159,8 @@ fun MenuButton(
 
 @Composable
 fun SubMenuButton(title: String, isSelected: Boolean, onClick: () -> Unit) {
-    val contentColor = if (isSelected) DarkMatcha else TextSecondary
-    val backgroundColor = if (isSelected) Color.White.copy(alpha = 0.08f) else Color.Transparent
+    val contentColor = if (isSelected) TextPrimary else TextSecondary
+    val backgroundColor = if (isSelected) SecondaryAccent else Color.Transparent
 
     TextButton(
         onClick = onClick,

@@ -15,15 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.muslima.yya.domain.model.Student
-import dev.chrisbanes.haze.hazeEffect
+
 import java.util.UUID
 
 val DarkTextFieldColors @Composable get() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = VibrantPink,
+    focusedBorderColor = PrimaryAccent,
     unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
-    focusedLabelColor = VibrantPink,
+    focusedLabelColor = PrimaryAccent,
     unfocusedLabelColor = TextSecondary,
-    cursorColor = VibrantPink,
+    cursorColor = PrimaryAccent,
     unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
     focusedContainerColor = Color.White.copy(alpha = 0.1f),
     focusedTextColor = TextPrimary,
@@ -42,12 +42,9 @@ fun StudentsSection(viewModel: AdminViewModel, state: AdminState, subOption: Str
             Card(
                 modifier = Modifier
                     .fillMaxSize()
-                    .hazeEffect(
-                        state = LocalHazeState.current,
-                        style = HeavyBlurStyle
-                    ),
-                colors = CardDefaults.cardColors(containerColor = GlassContainer),
-                border = BorderStroke(1.dp, GlassBorder),
+                    ,
+                colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+                border = BorderStroke(1.dp, BorderColor),
                 elevation = CardDefaults.cardElevation(0.dp),
                 shape = cardShape
             ) {
@@ -73,17 +70,14 @@ fun AddStudentSection(viewModel: AdminViewModel) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.padding(40.dp).fillMaxWidth()) {
-            Text("Add New Student", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("Add New Student", style = MaterialTheme.typography.headlineMedium, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
             Spacer(modifier = Modifier.height(8.dp))
@@ -111,7 +105,7 @@ fun AddStudentSection(viewModel: AdminViewModel) {
                     firstName = ""; lastName = ""; studentNumber = ""; age = ""; gender = ""; yearLevel = ""
                 },
                 modifier = Modifier.align(Alignment.End).height(56.dp).width(160.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
+                colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Save Student", fontWeight = FontWeight.Bold, color = Color.White)
@@ -126,17 +120,14 @@ fun ListStudentsSection(state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.padding(40.dp).fillMaxSize()) {
-            Text("All Students", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("All Students", style = MaterialTheme.typography.headlineMedium, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
                 items(state.studentsList) { student ->
@@ -167,18 +158,15 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(24.dp)) {
             Column(modifier = Modifier.weight(1f).fillMaxHeight().padding(end = 16.dp)) {
-                Text("Select Student", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                Text("Select Student", style = MaterialTheme.typography.headlineSmall, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn {
                     items(state.studentsList) { student ->
@@ -203,7 +191,7 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
                 var yearLevel by remember(selectedStudent) { mutableStateOf(selectedStudent!!.yearLevel) }
 
                 Column(modifier = Modifier.weight(2f).fillMaxHeight().padding(16.dp)) {
-                    Text("Update Details", style = MaterialTheme.typography.headlineSmall, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+                    Text("Update Details", style = MaterialTheme.typography.headlineSmall, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), colors = DarkTextFieldColors, shape = RoundedCornerShape(8.dp))
                     Spacer(modifier = Modifier.height(8.dp))
@@ -230,7 +218,7 @@ fun UpdateStudentSection(viewModel: AdminViewModel, state: AdminState) {
                             selectedStudent = null
                         },
                         modifier = Modifier.align(Alignment.End).height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkMatcha),
+                        colors = ButtonDefaults.buttonColors(containerColor = SecondaryAccent),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text("Update Student", fontWeight = FontWeight.Bold, color = Color.White)
@@ -251,17 +239,14 @@ fun DeleteStudentSection(viewModel: AdminViewModel, state: AdminState) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HeavyBlurStyle
-            ),
-        colors = CardDefaults.cardColors(containerColor = GlassContainer),
-        border = BorderStroke(1.dp, GlassBorder),
+            ,
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        border = BorderStroke(1.dp, BorderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = cardShape
     ) {
         Column(modifier = Modifier.padding(40.dp).fillMaxSize()) {
-            Text("Delete Students", style = MaterialTheme.typography.headlineMedium, color = VibrantPink, fontWeight = FontWeight.ExtraBold)
+            Text("Delete Students", style = MaterialTheme.typography.headlineMedium, color = PrimaryAccent, fontWeight = FontWeight.ExtraBold)
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
                 items(state.studentsList) { student ->
@@ -279,7 +264,7 @@ fun DeleteStudentSection(viewModel: AdminViewModel, state: AdminState) {
                             }
                             Button(
                                 onClick = { viewModel.deleteStudent(student.id) },
-                                colors = ButtonDefaults.buttonColors(containerColor = SoftCoral),
+                                colors = ButtonDefaults.buttonColors(containerColor = WarningAccent),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text("Delete", color = Color.White, fontWeight = FontWeight.Bold)
